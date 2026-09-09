@@ -2,6 +2,9 @@
 
 A small, provider-neutral Textual interface for financial-planning data.
 
+Status: early public demo and UI boundary. It is not the private finance
+application and does not yet provide a complete household planning workflow.
+
 This is the public UI layer under extraction from the private finance
 application. It deliberately contains no PostgreSQL, Kubernetes, brokerage
 credentials, provider imports, household defaults, or personal data.
