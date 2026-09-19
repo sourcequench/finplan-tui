@@ -5,6 +5,8 @@ A small, provider-neutral Textual interface for financial-planning data.
 Status: early public demo and UI boundary. It is not the private finance
 application and does not yet provide a complete household planning workflow.
 
+![Synthetic finplan-tui dashboard](screenshots/dashboard.svg)
+
 This is the public UI layer under extraction from the private finance
 application. It deliberately contains no PostgreSQL, Kubernetes, brokerage
 credentials, provider imports, household defaults, or personal data.
@@ -18,9 +20,15 @@ pip install -r requirements.txt
 python app.py --demo
 ```
 
-The demo uses synthetic accounts, investment lots, and locations. It is safe
-to run after cloning the repository. Press `1` for the dashboard, `2` for tax
-lots, `3` for location scenarios, and `q` to quit.
+The demo uses synthetic accounts, investment lots, locations, and a live
+deterministic activity stream. While it is open, new transactions arrive and
+balances change on a virtual clock. It is safe to run after cloning the
+repository. Press `1` for the dashboard, `2` for tax lots, `3` for location
+scenarios, `4` for cashflow, `5` for recurring activity, `6` for retirement,
+`h` for the built-in tour, and `q` to quit. Use
+`python app.py --static-demo` for a frozen fixture suitable for screenshots
+and tests. The synthetic assumptions live in `demo/scenario.json` and can be
+overridden with `--scenario path/to/scenario.json`.
 
 ## Boundary
 
@@ -33,12 +41,35 @@ flowchart LR
   R[Repository interface] --> M[Public TUI models]
   M --> S[Textual screens]
   S --> U[Human review]
-  P[Private PostgreSQL adapter] -.implements.-> R
+  P[SimpleFIN Bridge adapter] -.implements.-> R
+  X[Other provider or file adapter] -.implements.-> R
   D[Synthetic demo adapter] -.implements.-> R
 ```
 
 This project is a planning and review UI, not a tax-filing system, broker, or
 trading application.
+
+For a real personal-data setup, the recommended path is SimpleFIN Bridge: it
+provides the account and transaction feed used by the maintainers and can be
+walked through end to end. The public demo itself remains fully synthetic and
+requires no SimpleFIN credential. Plaid, CSV exports, and other providers can
+implement the same repository boundary later.
+
+## Use your own data
+
+The maintained personal-data path is documented in
+[`QUICKSTART.md`](QUICKSTART.md). It supports a local Python install or a
+Docker/Compose setup and uses SimpleFIN Bridge for account and transaction
+data. SimpleFIN does not provide brokerage tax lots or cost basis, so those
+remain a separate adapter and are never guessed by the UI.
+
+## Public demo roadmap
+
+The current `--demo` mode is a safe synthetic scaffold. The maintained plan
+for turning it into a complete, screenshot-ready showcase is in
+[`DEMO_PLAN.md`](DEMO_PLAN.md). It covers deterministic fixtures, core-backed
+calculations, route audits, reproducible screenshots, and the adapter guide
+for building a personal data repository without sharing it.
 
 ## Development checks
 

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "synthetic": true,
+  "scenario_name": "Illustrative single-filer retirement bridge",
+  "ordinary_income": 120000,
+  "long_term_gains": 20000,
+  "annual_spending": 40000,
+  "home_value": 400000,
+  "portfolio_return": 0.07,
+  "annual_withdrawal": 3000,
+  "horizon_years": 12,
+  "charity_target": 10000,
+  "charity_basis_rate": 0.25
+}

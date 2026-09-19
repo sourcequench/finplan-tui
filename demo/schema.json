@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": [
+    "schema_version",
+    "synthetic",
+    "scenario_name",
+    "ordinary_income",
+    "long_term_gains",
+    "annual_spending",
+    "home_value",
+    "portfolio_return",
+    "annual_withdrawal",
+    "horizon_years",
+    "charity_target"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "synthetic": {"type": "boolean", "const": true},
+    "scenario_name": {"type": "string", "minLength": 1},
+    "ordinary_income": {"type": "number", "minimum": 0},
+    "long_term_gains": {"type": "number", "minimum": 0},
+    "annual_spending": {"type": "number", "minimum": 0},
+    "home_value": {"type": "number", "minimum": 0},
+    "portfolio_return": {"type": "number", "minimum": 0},
+    "annual_withdrawal": {"type": "number", "minimum": 0},
+    "horizon_years": {"type": "integer", "minimum": 1},
+    "charity_target": {"type": "number", "minimum": 0},
+    "charity_basis_rate": {"type": "number", "minimum": 0, "maximum": 1}
+  }
+}

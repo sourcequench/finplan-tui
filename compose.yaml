@@ -1,0 +1,10 @@
+services:
+  finplan:
+    build: .
+    stdin_open: true
+    tty: true
+    volumes:
+      - finplan-config:/home/finplan/.config/finplan-tui
+
+volumes:
+  finplan-config:
