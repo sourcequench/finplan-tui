@@ -6,6 +6,7 @@ from core_adapter import rank_demo_locations, select_donation_lots
 from finplan_tui.lot_adapter import select_lots
 from finplan_tui.models import CashflowData, RecurringData, SpendingData
 from finplan_tui.formatting import format_cents, format_dollars
+from finplan_tui.widgets import format_signed_cents
 
 
 def test_demo_data_is_synthetic_and_complete():
@@ -59,6 +60,8 @@ def test_shared_currency_formatting_is_stable():
     assert format_cents(125100) == "$1,251"
     assert format_cents(-12) == "-$0.12"
     assert format_cents(None) == "—"
+    assert format_signed_cents(12500) == ("+$125.00", "bright_green")
+    assert format_signed_cents(-12500) == ("−$125.00", "bright_red")
 
 
 def test_core_adapter_translates_location_ranking():
