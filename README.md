@@ -36,6 +36,18 @@ The public UI consumes a small application-neutral data contract. A private
 application can later provide PostgreSQL-backed repositories; other users can
 provide files, APIs, or their own repositories.
 
+The reusable Python package is `finplan_tui`. Install it locally when another
+application needs the shared models and contracts:
+
+```sh
+pip install -e .
+```
+
+The private application uses `DashboardData` and `DashboardRepository` from
+this package while its existing screens migrate incrementally. Its PostgreSQL
+adapter remains private; only normalized models and provider-neutral contracts
+are shared.
+
 ```mermaid
 flowchart LR
   R[Repository interface] --> M[Public TUI models]
