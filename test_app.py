@@ -5,6 +5,7 @@ from repository import DemoPlanningRepository, LiveDemoRepository, SimpleFINRepo
 from core_adapter import rank_demo_locations, select_donation_lots
 from finplan_tui.lot_adapter import select_lots
 from finplan_tui.models import CashflowData, RecurringData, SpendingData
+from finplan_tui.formatting import format_cents, format_dollars
 
 
 def test_demo_data_is_synthetic_and_complete():
@@ -51,6 +52,13 @@ def test_shared_operational_models_round_trip_legacy_payloads():
     assert SpendingData.from_legacy(spending).to_legacy_dict() == spending
     assert CashflowData.from_legacy(cashflow).to_legacy_dict() == cashflow
     assert RecurringData.from_legacy(recurring).to_legacy_rows() == recurring
+
+
+def test_shared_currency_formatting_is_stable():
+    assert format_dollars(1250.4) == "$1,250"
+    assert format_cents(125100) == "$1,251"
+    assert format_cents(-12) == "-$0.12"
+    assert format_cents(None) == "—"
 
 
 def test_core_adapter_translates_location_ranking():

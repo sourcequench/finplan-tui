@@ -11,13 +11,14 @@ from textual.screen import Screen
 from textual.widgets import Footer, Header, Static
 
 from core_adapter import project_taxable_portfolio, rank_demo_locations, select_donation_lots
+from finplan_tui.formatting import format_dollars
 from models import PlanningData
 from repository import (DemoPlanningRepository, LiveDemoRepository,
                         PlanningRepository, SimpleFINRepository, load_demo_scenario)
 
 
 def money(value: float) -> str:
-    return f"${value:,.0f}"
+    return format_dollars(value)
 
 
 class DashboardScreen(Screen):
