@@ -4,6 +4,7 @@ from app import FinplanTUI
 from repository import DemoPlanningRepository, LiveDemoRepository, SimpleFINRepository
 from core_adapter import rank_demo_locations, select_donation_lots
 from finplan_tui.lot_adapter import select_lots
+from finplan_tui.models import CashflowData, RecurringData, SpendingData
 
 
 def test_demo_data_is_synthetic_and_complete():
@@ -39,6 +40,17 @@ def test_shared_lot_adapter_supports_private_strategy_names():
     assert result == {}
     assert seen["strategy"] == "sell_lowest_gain"
     assert seen["requested_cents"] == 1000
+
+
+def test_shared_operational_models_round_trip_legacy_payloads():
+    spending = {"monthly": {"Food": {"2026-09": 125}}, "raw_txns": {}, "anomalies": []}
+    cashflow = {"cashflow": {"2026-09": {"income": 100}},
+                "planned_obligations": [], "reconciliation": {"duplicates": []}}
+    recurring = [{"payee_name": "Example", "months_seen": 3}]
+
+    assert SpendingData.from_legacy(spending).to_legacy_dict() == spending
+    assert CashflowData.from_legacy(cashflow).to_legacy_dict() == cashflow
+    assert RecurringData.from_legacy(recurring).to_legacy_rows() == recurring
 
 
 def test_core_adapter_translates_location_ranking():

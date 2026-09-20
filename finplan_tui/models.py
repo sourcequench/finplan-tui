@@ -111,3 +111,71 @@ class DashboardData:
                 for item in self.transactions
             ],
         }
+
+
+@dataclass(frozen=True)
+class SpendingData:
+    """Monthly spending data normalized from any provider."""
+
+    monthly: dict[str, dict[str, int]]
+    raw_transactions: dict[str, tuple[tuple, ...]]
+    anomalies: tuple[dict, ...] = ()
+
+    @classmethod
+    def from_legacy(cls, payload: dict) -> "SpendingData":
+        return cls(
+            monthly=payload.get("monthly", {}),
+            raw_transactions={
+                key: tuple(rows) for key, rows in payload.get("raw_txns", {}).items()
+            },
+            anomalies=tuple(payload.get("anomalies", ())),
+        )
+
+    def to_legacy_dict(self) -> dict:
+        return {
+            "monthly": self.monthly,
+            "raw_txns": {key: list(rows) for key, rows in self.raw_transactions.items()},
+            "anomalies": list(self.anomalies),
+        }
+
+
+@dataclass(frozen=True)
+class CashflowData:
+    """Classified cashflow and reconciliation results."""
+
+    cashflow: dict[str, dict[str, int]]
+    planned_obligations: tuple[dict, ...] = ()
+    reconciliation: dict | None = None
+
+    def __post_init__(self) -> None:
+        if self.reconciliation is None:
+            object.__setattr__(self, "reconciliation", {})
+
+    @classmethod
+    def from_legacy(cls, payload: dict) -> "CashflowData":
+        return cls(
+            cashflow=payload.get("cashflow", {}),
+            planned_obligations=tuple(payload.get("planned_obligations", ())),
+            reconciliation=payload.get("reconciliation") or {},
+        )
+
+    def to_legacy_dict(self) -> dict:
+        return {
+            "cashflow": self.cashflow,
+            "planned_obligations": list(self.planned_obligations),
+            "reconciliation": self.reconciliation,
+        }
+
+
+@dataclass(frozen=True)
+class RecurringData:
+    """Recurring-payee rows normalized for review screens."""
+
+    rows: tuple[dict, ...]
+
+    @classmethod
+    def from_legacy(cls, rows: list[dict]) -> "RecurringData":
+        return cls(tuple(rows))
+
+    def to_legacy_rows(self) -> list[dict]:
+        return list(self.rows)
