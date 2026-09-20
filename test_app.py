@@ -3,6 +3,7 @@ import asyncio
 from app import FinplanTUI
 from repository import DemoPlanningRepository, LiveDemoRepository, SimpleFINRepository
 from core_adapter import rank_demo_locations, select_donation_lots
+from finplan_tui.lot_adapter import select_lots
 
 
 def test_demo_data_is_synthetic_and_complete():
@@ -27,6 +28,17 @@ def test_core_adapter_translates_lots_without_running_a_process():
     assert result.selected_gain == 850000
     assert seen["strategy"] == "donate_highest_gain"
     assert seen["lots"][0]["symbol"] == "DEMO"
+
+
+def test_shared_lot_adapter_supports_private_strategy_names():
+    lots = DemoPlanningRepository().load_planning_data().lots
+    seen = {}
+
+    result = select_lots(lots, 1000, "sell_lowest_gain", lambda payload: seen.update(payload) or {})
+
+    assert result == {}
+    assert seen["strategy"] == "sell_lowest_gain"
+    assert seen["requested_cents"] == 1000
 
 
 def test_core_adapter_translates_location_ranking():

@@ -24,6 +24,7 @@ class TaxLot:
     long_term: bool
     acquired: str = ""
     account: str = "Demo brokerage"
+    lot_id: str = ""
 
     @property
     def gain(self) -> float:

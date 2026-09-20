@@ -8,6 +8,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 from models import TaxLot
+from finplan_tui.lot_adapter import select_lots
 
 
 @dataclass(frozen=True)
@@ -30,22 +31,10 @@ def select_donation_lots(
     library binding. Returning ``None`` means the core command is unavailable;
     the UI can still show the underlying lots without inventing a selection.
     """
-    payload = {
-        "strategy": "donate_highest_gain",
-        "requested_cents": requested_cents,
-        "lots": [
-            {"id": f"demo-{index}", "symbol": lot.symbol,
-             "market_value_cents": round(lot.market_value * 100),
-             "cost_basis_cents": round(lot.basis * 100),
-             "unrealized_gain_cents": round(lot.gain * 100),
-             "long_term": lot.long_term}
-            for index, lot in enumerate(lots)
-        ],
-    }
     runner = runner or lotselection_runner()
-    if runner is None:
+    response = select_lots(lots, requested_cents, "donate_highest_gain", runner)
+    if response is None:
         return None
-    response = runner(payload)
     return DonationSelection(
         tuple(response.get("allocations", [])),
         int(response.get("selected_value_cents", 0)),
