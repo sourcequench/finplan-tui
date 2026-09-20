@@ -104,7 +104,7 @@ class DashboardData:
                 )
                 for account in self.accounts
             ],
-            "trend": self.trend,
+            "trend": list(self.trend),
             "transactions": [
                 (item.date, item.payee, round(item.amount * 100), item.account)
                 for item in self.transactions
